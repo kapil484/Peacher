@@ -1,0 +1,19 @@
+{% if idea %}
+
+{% for i in idea %}
+
+<p>User :{{ i.peacher }}</p>
+<p> {{i.date_created}} </p>
+
+{% for c in i.category.all %}
+    {{c.category}}
+
+    <div>
+        <a href="">Edit</a>
+        a href="">Delete</a>
+    </div>
+{% endfor %}
+
+{% endfor %}
+
+{% endif %}

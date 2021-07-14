@@ -1,7 +1,7 @@
 from django.core.checks import messages
 from django.shortcuts import render
 from .forms import CreateUserForm
-from .models import MyUser
+from .models import MyUser, idea
 from django.contrib import messages
 from django.http import HttpResponse, request
 from django.contrib.auth.models import Group
@@ -54,4 +54,9 @@ def login_user(request):
             messages.info(request,'username or password is wrong')
 
     return render(request,"main/login.html")
+
+
+def ideapeacherpage(request):
+    i =idea.object.all()
+    return render(request, "main/home.html",{'idea':i})
 

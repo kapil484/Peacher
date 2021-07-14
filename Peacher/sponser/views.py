@@ -3,6 +3,7 @@ from django.contrib.auth.models import Group
 from ideapeacher.models import MyUser
 from django.contrib import messages
 from django.http import HttpResponse, request
+from .models import SponerUser
 
 from ideapeacher.forms import CreateUserForm
 # Create your views here.
@@ -16,22 +17,22 @@ def register_sponser(request):
             user = form.save()
             username = form.cleaned_data.get('username')
         
-        if not Group.objects.filter(name='ideapeacher').exists():
-            group = Group.objects.create(name='ideapeacher')
-            addtogroup = Group.objects.get(name='ideapeacher')
+        if not Group.objects.filter(name='sponder').exists():
+            group = Group.objects.create(name='sponder')
+            addtogroup = Group.objects.get(name='sponder')
             user.groups.add(addtogroup)
 
-            MyUser.objects.create(user=user,name=user.username)
+            SponerUser.objects.create(user=user,name=user.username)
             messages.success(request, "Account was Created for "+ username)
-            return HttpResponse("Created user with group Ideapeacher")
+            return HttpResponse("Created user with group sponder")
         
         else:
-            group = Group.objects.get(name='ideapeacher')
+            group = Group.objects.get(name='sponder')
             user.groups.add(group)
 
-            MyUser.objects.create(user=user , name=user.username)
+            SponerUser.objects.create(user=user , name=user.username)
             messages.success(request, "Account was Created for "+ username)
-            return HttpResponse("Created user with group Ideapeacher")
+            return HttpResponse("Created user with group sponder")
     
     context ={'form':form}
 
