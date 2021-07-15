@@ -1,9 +1,10 @@
+from ideapeacher.decorators import ideapeacher_only
 from django.core.checks import messages
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from .forms import CreateUserForm
 from .models import MyUser, idea
 from django.contrib import messages
-from django.http import HttpResponse, request
+from django.http import HttpResponse
 from django.contrib.auth.models import Group
 
 from django.contrib.auth import authenticate,login,logout
@@ -55,8 +56,13 @@ def login_user(request):
 
     return render(request,"main/login.html")
 
+def logout_user(request):
+    logout(request)
+    return redirect('ideapeacher:login_form')
 
+
+@ideapeacher_only
 def ideapeacherpage(request):
-    i =idea.object.all()
+    i =idea.objects.all()
     return render(request, "main/home.html",{'idea':i})
 
