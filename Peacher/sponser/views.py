@@ -16,22 +16,22 @@ def register_sponser(request):
             user = form.save()
             username = form.cleaned_data.get('username')
         
-            if not Group.objects.filter(name='sponder').exists():
-                group = Group.objects.create(name='sponder')
-                addtogroup = Group.objects.get(name='sponder')
+            if not Group.objects.filter(name='sponser').exists():
+                group = Group.objects.create(name='sponser')
+                addtogroup = Group.objects.get(name='sponser')
                 user.groups.add(addtogroup)
 
                 SponerUser.objects.create(user=user,name=user.username)
                 messages.success(request, "Account was Created for "+ username)
-                return HttpResponse("Created user with group sponder")
+                return HttpResponse("Created user with group sponser")
             
             else:
-                group = Group.objects.get(name='sponder')
+                group = Group.objects.get(name='sponser')
                 user.groups.add(group)
 
                 SponerUser.objects.create(user=user , name=user.username)
                 messages.success(request, "Account was Created for "+ username)
-                return HttpResponse("Created user with group sponder")
+                return HttpResponse("Created user with group sponser")
         
     context ={'form':form}
 

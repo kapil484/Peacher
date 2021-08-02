@@ -13,6 +13,9 @@ class MyUser(models.Model):
     idproveno = models.CharField(max_length=30, null=True)
     mobile = models.CharField(max_length=10, null=True)
 
+    def __str__(self):
+        return self.name
+
 class category(models.Model):
     category = models.CharField(max_length=100)
 
@@ -25,3 +28,13 @@ class idea(models.Model):
 
     def __str__(self):
         return self.Post_idea
+
+
+class Public(models.Model):
+    comment = models.TextField()
+    date_created = models.DateTimeField(default=datetime.now())
+    on_post = models.ForeignKey(idea, on_delete=models.CASCADE, default=None)
+    byUser = models.ForeignKey(User, on_delete=models.CASCADE, default=None)
+
+    def __str__(self):
+        return self.comment

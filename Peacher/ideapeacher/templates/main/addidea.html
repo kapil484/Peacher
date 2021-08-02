@@ -1,0 +1,17 @@
+<form method="POST" action="{% url 'ideapeacher:submitidea' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <select name="dropdown">
+        <option value="Technology">Technology</option>
+        <option value="Business">Business</option>
+        <option value="Health">Health</option>
+        <option value="LifeHacks">Life Hacks</option>
+    </select>
+
+    <br>
+    <br>
+    <p>Idea</p>
+    <textarea name="idea"></textarea>
+    <input type="file" name="pdf">
+    <button type="submit">Submit</button>
+</form>

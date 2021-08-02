@@ -1,8 +1,9 @@
-from ideapeacher.decorators import ideapeacher_only
+from datetime import datetime
+from  ideapeacher.decorators import ideapeacher_only,allowed_users
 from django.core.checks import messages
 from django.shortcuts import redirect, render
 from .forms import CreateUserForm
-from .models import MyUser, idea
+from .models import MyUser, Public, category, idea
 from django.contrib import messages
 from django.http import HttpResponse
 from django.contrib.auth.models import Group
@@ -63,6 +64,85 @@ def logout_user(request):
 
 @ideapeacher_only
 def ideapeacherpage(request):
-    i =idea.objects.all()
-    return render(request, "main/home.html",{'idea':i})
+    ideas =idea.objects.all()
+    comment = Public.objects.all()
+    return render(request, "main/home.html",{'idea':ideas,'comments':comment})
 
+@allowed_users(allowed_roles=['sponser'])
+def sponserPage(request):
+    users = MyUser.objects.all()
+    ideas = idea.objects.all()
+    comment = Public.objects.all()
+
+    return render(request,"main/homesponser.html",{'ideas':ideas,'users':users,'comments':comment})
+
+@allowed_users(allowed_roles=['ideapeacher'])
+def submitIdea(request):
+    if request.method == "POST":
+        data = request.POST.get("dropdown")
+
+        if category.objects.filter(category=data).exists():
+            fdata = category(category=data)
+            fdata.save()
+
+            idea1 = request.POST.get("idea")
+            user1 = MyUser.objects.get(user = request.user)
+            pdf = request.FILES.get('pdf')
+
+            date = datetime.now()
+
+            post = idea(peacher=user1, post_idea = idea1, date_created = date, pdf=pdf)
+            post.save()
+            post.category.add(fdata)
+
+            return redirect('/home')
+        
+        else:
+            cat=category.objects.get(category=data)
+
+            idea1 = request.POST.get("idea")
+            user1 = MyUser.objects.get(user = request.user)
+            pdf = request.FILES.get('pdf')
+
+            date = datetime.now()
+            post = idea(peacher=user1, post_idea = idea1, date_created = date, pdf=pdf)
+            post.save()
+            post.category.add(cat)
+    
+    return redirect("/home")
+
+
+def post(request):
+    return render(request,"main/addidea.html")
+
+
+
+def comment(request,pk):
+    if request.method == "POST":
+        post=idea.objects.get(pk=pk)
+        comm=request.POST.get("comment")
+        user=request.user
+        date=datetime.now()
+        data = Public(comment=comm,date_created=date,on_post=post,byUser=user)
+        data.save()
+
+    return redirect("/home")
+
+@allowed_users(allowed_roles=['ideapeacher'])
+def edit_idea(request,pk):
+    id=idea.objects.get(pk=pk)
+    context={'edit':id}
+    return render(request,"main/edit.html",context)
+
+@allowed_users(allowed_roles=['ideapeacher'])
+def updateidea(request,pk):
+    ids = idea.objects.get(pk=pk)
+    ids.Post_idea = request.POST.get('idea')
+    ids.save()
+    return redirect("/home")
+
+@allowed_users(allowed_roles=['ideapeacher'])
+def delete(request,pk):
+    ids=idea.objects.get(pk=pk)
+    ids.delete()
+    return redirect("/home")

@@ -1,9 +1,9 @@
 {% extends "main/header.html" %}
 
 {% block content %}
-{% if idea %}
+{% if ideas %}
 
-{% for i in idea %}
+{% for i in ideas %}
 
 <p>User :{{ i.peacher }}</p>
 <p> {{i.date_created}} </p>
@@ -11,10 +11,6 @@
 {% for c in i.category.all %}
     {{c.category}}
 
-    <div>
-        <a href="{% url 'ideapeacher:edit_idea' i.pk %}">Edit</a>
-        <a href="{% url 'ideapeacher:delete' i.pk %}">Delete</a>
-    </div>
     <p>{{i.Post_idea}}</p>
 
     <div>
@@ -37,5 +33,4 @@
 {% endfor %}
 
 {% endif %}
-
 {% endblock %}
